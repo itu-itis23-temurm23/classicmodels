@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2 class="text-center mb-4">{{ product_line }}</h2>
+<div class="row">
+  {% for product in products %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ product.productName }}</h5>
+        <p class="card-text">Scale: {{ product.productScale }}</p>
+        <p class="card-text">Price: ${{ product.buyPrice }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

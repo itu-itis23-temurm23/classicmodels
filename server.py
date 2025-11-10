@@ -13,6 +13,14 @@ def index():
     productlines = db.execute_query(query)
     return render_template('index.html', productlines=productlines)
 
+# New route for productline pages
+@app.route("/products/<product_line>")
+def products_by_line(product_line):
+    query = "SELECT * FROM products WHERE productLine = %s"
+    products = db.execute_query(query, (product_line,))
+    return render_template("products.html", products=products, product_line=product_line)
+
+
 @app.route("/login",methods=["GET","POST"])
 def login():
     if request.method == "POST":

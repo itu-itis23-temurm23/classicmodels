@@ -12,7 +12,7 @@
         <h5 class="card-title text-center">{{ line.productLine }}</h5>
         <p class="card-text small text-muted">{{ line.textDescription[:180] }}...</p>
         <div class="text-center">
-          <a href="#" class="btn btn-primary">View Products</a>
+          <a href="{{ url_for('products_by_line', product_line=line.productLine) }}" class="btn btn-primary">View Products</a>
         </div>
       </div>
     </div>
