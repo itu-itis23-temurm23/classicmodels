@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Order #{{ order.orderNumber }}</h2>
+<p><strong>Date:</strong> {{ order.orderDate }} | <strong>Status:</strong> {{ order.status }}</p>
+
+<h4 class="mt-4">Items</h4>
+<table class="table">
+  <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Line Total</th></tr></thead>
+  <tbody>
+    {% for it in items %}
+    <tr>
+      <td>{{ it.productName }}</td>
+      <td>{{ it.quantityOrdered }}</td>
+      <td>{{ "%.2f"|format(it.priceEach) }}</td>
+      <td>{{ "%.2f"|format(it.quantityOrdered * it.priceEach) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4 class="mt-4">Payments</h4>
+{% if payments %}
+  <ul class="list-group">
+    {% for p in payments %}
+      <li class="list-group-item">
+        <strong>{{ p.checkNumber or p.paymentDate }}:</strong> ${{ "%.2f"|format(p.amount) }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <div class="alert alert-info">No payments found for this order's customer.</div>
+{% endif %}
+{% endblock %}

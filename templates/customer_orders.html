@@ -5,7 +5,8 @@
 {% if orders %}
 <div class="list-group shadow-sm">
     {% for order in orders %}
-    <li class="list-group-item">
+    
+    <a href="{{ url_for('order_detail', order_number=order.orderNumber) }}" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1">Order #{{ order.orderNumber }}</h5>
             <small class="text-muted">{{ order.orderDate.strftime('%Y-%m-%d') }}</small>
@@ -28,8 +29,7 @@
         {% if order.comments %}
             <p class="small mt-2 mb-0 fst-italic text-muted"><strong>Note:</strong> {{ order.comments }}</p>
         {% endif %}
-    </li>
-    {% endfor %}
+    </a> {% endfor %}
 </div>
 {% else %}
 <div class="alert alert-info">You have not placed any orders yet.</div>

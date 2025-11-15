@@ -9,6 +9,7 @@ load_dotenv() # Load variables from .env file at the top
 app = Flask(__name__)
 app.secret_key = "supersecretkey" # for flash messages
 
+
 # get password from environment variable
 db_password = getenv("DB_PASSWORD")
 
@@ -169,6 +170,29 @@ def my_profile():
     else:
         flash("Your profile type is unknown.", "danger")
         return redirect(url_for("index"))
+
+@app.route("/order/<int:order_number>")
+def order_detail(order_number):
+    # Authorization: customer can see own orders; employee can see assigned customer's orders
+    order = db.get_order(order_number)
+    if not order:
+        flash("Order not found.", "danger")
+        return redirect(url_for("index"))
+
+    # If customer: ensure owns the order
+    if session.get("user_type") == "customer":
+        if order["customerNumber"] != session.get("user_number"):
+            flash("Access denied.", "danger")
+            return redirect(url_for("index"))
+
+    # If employee: optionally verify assignment
+    if session.get("user_type") == "employee":
+        pass
+
+    order_items = db.get_order_details(order_number)
+    payments = db.get_order_payments(order_number)
+    return render_template("order_detail.html", order=order, items=order_items, payments=payments)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

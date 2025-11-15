@@ -82,3 +82,28 @@ class DatabaseHandler:
     def close(self):
         self.cursor.close()
         self.db.close()
+
+
+    def get_order(self, order_number):
+        query = "SELECT * FROM orders WHERE orderNumber = %s"
+        return self.execute_query(query, (order_number,), fetchone=True)
+
+    def get_order_details(self, order_number):
+        query = """
+                SELECT od.*, p.productName
+                FROM orderdetails od
+                JOIN products p ON od.productCode = p.productCode
+                WHERE od.orderNumber = %s
+        """
+        return self.execute_query(query, (order_number,))
+
+    def get_order_payments(self, order_number):
+        # payments table links to customer, not order; if you have mapping use appropriate query.
+        # classicmodels test DB doesn't have direct order->payments mapping; common approach: show payments of the customer.
+        query = """
+            SELECT p.* FROM payments p
+            JOIN orders o ON p.customerNumber = o.customerNumber
+            WHERE o.orderNumber = %s
+        """
+        return self.execute_query(query, (order_number,))
+
