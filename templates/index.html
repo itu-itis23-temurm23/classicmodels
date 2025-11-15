@@ -1,22 +1,20 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h2 class="text-center mb-4">Our Products</h2>
-
-<div class="row">
-  {% for line in productlines %}
-  <div class="col-md-4 mb-4">
-    <div class="card h-100">
-      <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="{{ line.productLine }}">
-      <div class="card-body">
-        <h5 class="card-title text-center">{{ line.productLine }}</h5>
-        <p class="card-text small text-muted">{{ line.textDescription[:180] }}...</p>
-        <div class="text-center">
-          <a href="{{ url_for('products_by_line', product_line=line.productLine) }}" class="btn btn-primary">View Products</a>
+<div class="container my-5">
+    <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+        <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+            <h1 class="display-4 fw-bold lh-1 text-body-emphasis">Welcome to ClassicModels</h1>
+            <p class="lead">Your one-stop shop for the finest die-cast models and replicas. From classic cars to vintage planes, discover our curated collection of high-quality collectibles.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+                <a href="{{ url_for('productlines') }}" type="button" class="btn btn-primary btn-lg px-4 me-md-2 fw-bold">Shop All Products</a>
+                <a href="{{ url_for('login') }}" type="button" class="btn btn-outline-secondary btn-lg px-4">Login</a>
+            </div>
         </div>
-      </div>
+        <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
+            <!-- You can replace this placeholder with a cool image -->
+            <img class="rounded-lg-3" src="https://placehold.co/600x400/343a40/ffffff?text=ClassicModels" alt="Classic Model Car" width="720">
+        </div>
     </div>
-  </div>
-  {% endfor %}
 </div>
 {% endblock %}

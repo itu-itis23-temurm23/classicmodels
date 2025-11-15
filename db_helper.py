@@ -10,36 +10,51 @@ class DatabaseHandler:
         )
         self.cursor = self.db.cursor(dictionary=True) # returns results as dict
 
-    def check_customer_number(self,num):
+    def check_customer_number(self, num):
         """
-        check if the customer number exits in customer table
+        Check if the customer number exists in customer table.
+        Returns:
+            - A fetched query
         """
         query = "SELECT * FROM customers WHERE customerNumber = %s"
-        self.cursor.execute(query,(num,))
-        result = self.cursor.fetchone()
-        return result
+        return self.execute_query(query, (num,), fetchone=True)
     
-    def check_employee_number(self,num):
+    def check_employee_number(self, num):
         """
-        check if the employee number exists in employee table
+        Check if the employee number exists in employee table.
         """
         query = "SELECT * FROM employees WHERE employeeNumber = %s"
-        self.cursor.execute(query,(num,))
-        result = self.cursor.fetchone()
-        return result
+        return self.execute_query(query, (num,), fetchone=True)
 
     def get_assigned_customers(self, employee_number):
         """Fetches all customers assigned to a specific Sales Rep."""
         query = "SELECT customerNumber, customerName, city, country FROM customers WHERE salesRepEmployeeNumber = %s"
-        self.cursor.execute(query, (employee_number,))
-        return self.cursor.fetchall()
+        return self.execute_query(query, (employee_number,))
     
-    def execute_query(self,query, params=None):
+    def get_customer_details(self, customer_number):
+        """
+        Fetches all details for a single customer.
+        Returns:
+            - A single dictionary for the customer, or None
+        """
+        query = "SELECT * FROM customers WHERE customerNumber = %s"
+        return self.execute_query(query, (customer_number,), fetchone=True)
+
+    def get_customer_orders(self, customer_number):
+        """
+        Fetches all orders for a specific customer, newest first.
+        Returns:
+            - A list of order dictionaries
+        """
+        query = "SELECT * FROM orders WHERE customerNumber = %s ORDER BY orderDate DESC"
+        return self.execute_query(query, (customer_number,))
+    
+    def execute_query(self, query, params=None, fetchone=False):
         """
         execute the given query
         Returns:
-            - For Select: fetched rows
-            - For Insert/Update/Delete: number of affected rows
+            - for SELECT: fetched rows
+            - for INSERT/UPDATE/DELETE: number of affected rows
         Raises:
             - mysql.connector.Error if the query fails
         """
@@ -51,7 +66,10 @@ class DatabaseHandler:
 
             # if its a select query
             if query.strip().lower().startswith("select"):
-                result = self.cursor.fetchall()
+                if not fetchone:
+                    result = self.cursor.fetchall()
+                else:
+                    result = self.cursor.fetchone()
                 return result 
             else:
                 self.db.commit() # commit changes for insert/update/delete

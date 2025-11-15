@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{% if customer %}
+    <h2 class="mb-3">Customer Profile: {{ customer.customerName }}</h2>
+    <a href="{{ url_for('employee_dashboard') }}" class="btn btn-outline-secondary btn-sm mb-4">&larr; Back to Dashboard</a>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header">Customer Details</div>
+        <div class="card-body">
+            <p><strong>Contact:</strong> {{ customer.contactFirstName }} {{ customer.contactLastName }}</p>
+            <p><strong>Address:</strong> {{ customer.addressLine1 }}, {{ customer.city }}, {{ customer.country }}</p>
+            <p><strong>Phone:</strong> {{ customer.phone }}</p>
+            <p><strong>Credit Limit:</strong> ${{ "{:,.2f}".format(customer.creditLimit) }}</p>
+        </div>
+    </div>
+{% endif %}
+
+<h3 class="mt-4">Order History</h3>
+{% if orders %}
+<ul class="list-group shadow-sm">
+    {% for order in orders %}
+    <li class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">Order #{{ order.orderNumber }}</h5>
+            <small class="text-muted">{{ order.orderDate.strftime('%Y-%m-%d') }}</small>
+        </div>
+        <p class="mb-1">
+            <strong>Status:</strong> 
+            {% if order.status == 'Shipped' %}
+                <span class="badge bg-success">{{ order.status }}</span>
+            {% elif order.status == 'Cancelled' or order.status == 'Disputed' %}
+                <span class="badge bg-danger">{{ order.status }}</span>
+            {% elif order.status == 'On Hold' %}
+                <span class="badge bg-warning text-dark">{{ order.status }}</span>
+            {% else %}
+                <span class="badge bg-info">{{ order.status }}</span>
+            {% endif %}
+        </p>
+        {% if order.shippedDate %}
+            <small class="text-muted">Shipped on: {{ order.shippedDate.strftime('%Y-%m-%d') }}</small>
+        {% endif %}
+        {% if order.comments %}
+        <p class="small mt-2 mb-0 fst-italic text-muted"><strong>Note:</strong> {{ order.comments }}</p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<div class="alert alert-info">This customer has not placed any orders yet.</div>
+{% endif %}
+
+{% endblock %}

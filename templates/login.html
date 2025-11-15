@@ -1,23 +1,60 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Login with Number</h2>
-    
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{category}}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-    
-    <form method="POST" class="mx-auto" style="max-width: 400px;">
-        <div class="mb-3">
-            <label for="number" class="form-label">Enter your user number</label>
-            <input type="text" class="form-control" id="number" name="number" placeholder="1234" required>
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow-sm">
+        <div class="card-header p-0">
+            <ul class="nav nav-tabs nav-fill" id="loginTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-pane" type="button" role="tab" aria-controls="customer-pane" aria-selected="true">
+                        Customer Login
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="employee-tab" data-bs-toggle="tab" data-bs-target="#employee-pane" type="button" role="tab" aria-controls="employee-pane" aria-selected="false">
+                        Employee Login
+                    </button>
+                </li>
+            </ul>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
+        <div class="card-body">
+            <!-- This flash message block is REMOVED, as it's now in layout.html -->
+            <!-- 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              ...
+            {% endwith %} 
+            -->
+            
+            <div class="tab-content p-3" id="loginTabContent">
+                <!-- Customer Login Form -->
+                <div class="tab-pane fade show active" id="customer-pane" role="tabpanel" aria-labelledby="customer-tab" tabindex="0">
+                    <h5 class="text-center mb-4">Customer Login</h5>
+                    <form method="POST">
+                        <!-- Hidden input to identify the form -->
+                        <input type="hidden" name="user_type" value="customer">
+                        <div class="mb-3">
+                            <label for="customer_number" class="form-label">Enter your Customer Number</label>
+                            <input type="text" class="form-control" id="customer_number" name="number" placeholder="e.g., 123" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login as Customer</button>
+                    </form>
+                </div>
+                
+                <!-- Employee Login Form -->
+                <div class="tab-pane fade" id="employee-pane" role="tabpanel" aria-labelledby="employee-tab" tabindex="0">
+                    <h5 class="text-center mb-4">Employee Login</h5>
+                    <form method="POST">
+                        <!-- Hidden input to identify the form -->
+                        <input type="hidden" name="user_type" value="employee">
+                        <div class="mb-3">
+                            <label for="employee_number" class="form-label">Enter your Employee Number</label>
+                            <input type="text" class="form-control" id="employee_number" name="number" placeholder="e.g., 1234" required>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100">Login as Employee</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

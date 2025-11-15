@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 class="mb-3">My Order History</h2>
+{% if orders %}
+<div class="list-group shadow-sm">
+    {% for order in orders %}
+    <li class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">Order #{{ order.orderNumber }}</h5>
+            <small class="text-muted">{{ order.orderDate.strftime('%Y-%m-%d') }}</small>
+        </div>
+        <p class="mb-1">
+            <strong>Status:</strong> 
+            {% if order.status == 'Shipped' %}
+                <span class="badge bg-success">{{ order.status }}</span>
+            {% elif order.status == 'Cancelled' or order.status == 'Disputed' %}
+                <span class="badge bg-danger">{{ order.status }}</span>
+            {% elif order.status == 'On Hold' %}
+                <span class="badge bg-warning text-dark">{{ order.status }}</span>
+            {% else %}
+                <span class="badge bg-info">{{ order.status }}</span>
+            {% endif %}
+        </p>
+        {% if order.shippedDate %}
+            <small class="text-muted">Shipped on: {{ order.shippedDate.strftime('%Y-%m-%d') }}</small>
+        {% endif %}
+        {% if order.comments %}
+            <p class="small mt-2 mb-0 fst-italic text-muted"><strong>Note:</strong> {{ order.comments }}</p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">You have not placed any orders yet.</div>
+{% endif %}
+
+{% endblock %}

@@ -23,32 +23,65 @@
               href="{{ url_for('index') }}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link">Products</a>
+            <a class="nav-link{% if request.endpoint == 'productlines' or request.endpoint == 'products_by_line' %} active{% endif %}" 
+               href="{{ url_for('productlines') }}">Products</a>
           </li>
+
           {% if session.get('user_number') %}
-          <li class="nav-item">
-              <a href="{{ url_for('my_profile') }}" class="nav-link">My Profile</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle {% if request.endpoint == 'my_profile' or request.endpoint == 'customer_profile' or request.endpoint == 'customer_orders' or request.endpoint == 'employee_dashboard' %} active{% endif %}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Welcome, {{ session.get("user_name", "User") }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              
+              {% if session.get('user_type') == 'employee' %}
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('my_profile') }}">Employee Dashboard</a>
+                </li>
+              {% else %}
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('customer_profile') }}">My Profile</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('customer_orders') }}">My Orders</a>
+                </li>
+              {% endif %}
+
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
           </li>
-          <li class="nav-item">
-              <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
-          </li>
+
           {% else %}
           <li class="nav-item">
-              <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+              <a href="{{ url_for('login') }}" class="nav-link{% if request.endpoint == 'login' %} active{% endif %}">Login</a>
           </li>
           {% endif %}
-        </ul>
+          </ul>
       </div>
     </div>
   </nav>
 
   <div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     {% block content %}{% endblock %}
   </div>
 
   <footer class="text-center text-muted mt-5 mb-3">
     <p>© 2025 ClassicModels</p>
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

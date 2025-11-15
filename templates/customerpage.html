@@ -1,9 +1,43 @@
 {% extends "layout.html" %}
 {% block content %}
-<h2 class="text-center mb-4">Customer Page</h2>
 
+<!-- This page is for the logged-in customer to see their own info -->
 
+{% if customer %}
+    <!-- Customer Details Card -->
+    <h2 class="mb-3">My Profile</h2>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Welcome, {{ customer.contactFirstName }} {{ customer.contactLastName }}!</h5>
+        </div>
+        <div class="card-body">
+            <h6 class="card-title"><strong>Company:</strong> {{ customer.customerName }}</h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>Address:</strong>
+                    <address class="ms-3">
+                        {{ customer.addressLine1 }}<br>
+                        {% if customer.addressLine2 %}
+                            {{ customer.addressLine2 }}<br>
+                        {% endif %}
+                        {{ customer.city }}, {{ customer.state }} {{ customer.postalCode }}<br>
+                        {{ customer.country }}
+                    </address>
+                </div>
+                <div class="col-md-6">
+                    <strong>Phone:</strong>
+                    <p class="ms-3">{{ customer.phone }}</p>
+                    
+                    <strong>Credit Limit:</strong>
+                    <p class="ms-3">${{ "{:,.2f}".format(customer.creditLimit) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-warning">Could not load customer profile.</div>
+{% endif %}
 
-
+<!-- The Order History section has been moved to customer_orders.html -->
 
 {% endblock %}
