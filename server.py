@@ -22,7 +22,8 @@ db = DatabaseHandler(password=db_password) # pass the loaded password here
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    offices = db.get_all_offices()
+    return render_template('index.html', offices=offices)
 
 @app.route('/productlines')
 def productlines():
@@ -120,7 +121,30 @@ def employee_dashboard():
     
     customers = db.get_assigned_customers(employee_number)
     
-    return render_template("dashboard.html", customers=customers)
+    # NEW: Get my reports
+    my_reports = db.get_employee_reports(employee_number)
+    
+    # NEW: Get team reports (if I am a manager)
+    team_reports = db.get_subordinate_reports(employee_number)
+    
+    return render_template("dashboard.html", customers=customers, my_reports=my_reports, team_reports=team_reports)
+
+@app.route("/create_report", methods=["POST"])
+def create_report():
+    if session.get("user_type") != "employee":
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("index"))
+        
+    content = request.form.get("report_content")
+    if not content:
+        flash("Report content cannot be empty.", "danger")
+        return redirect(url_for("employee_dashboard"))
+        
+    employee_number = session.get("user_number")
+    db.create_report(employee_number, content)
+    
+    flash("Report submitted successfully!", "success")
+    return redirect(url_for("employee_dashboard"))
 
 @app.route("/employee/customer_orders/<int:customer_num>")
 def employee_view_customer_orders(customer_num):
