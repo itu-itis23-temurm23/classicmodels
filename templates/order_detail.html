@@ -1,11 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
 <h2>Order #{{ order.orderNumber }}</h2>
-<p><strong>Date:</strong> {{ order.orderDate }} | <strong>Status:</strong> {{ order.status }}</p>
+<p>
+  <strong>Date:</strong> {{ order.orderDate }}  
+  |  
+  <strong>Status:</strong>
+  <span class="badge 
+      {% if order.status == 'In Process' %} bg-info 
+      {% elif order.status == 'Shipped' %} bg-success
+      {% elif order.status == 'Cancelled' %} bg-danger
+      {% elif order.status == 'On Hold' %} bg-warning text-dark
+      {% else %} bg-secondary
+      {% endif %}">
+      {{ order.status }}
+  </span>
+</p>
 
-<h4 class="mt-4">Items</h4>
-<table class="table">
-  <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Line Total</th></tr></thead>
+<hr>
+
+<h4>Items</h4>
+<table class="table table-striped">
+  <thead>
+    <tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+  </thead>
   <tbody>
     {% for it in items %}
     <tr>
@@ -15,23 +32,21 @@
         </a>
       </td>
       <td>{{ it.quantityOrdered }}</td>
-      <td>{{ "%.2f"|format(it.priceEach) }}</td>
-      <td>{{ "%.2f"|format(it.quantityOrdered * it.priceEach) }}</td>
+      <td>${{ "%.2f"|format(it.priceEach) }}</td>
+      <td>${{ "%.2f"|format(it.quantityOrdered * it.priceEach) }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<h4 class="mt-4">Payments</h4>
-{% if payments %}
-  <ul class="list-group">
-    {% for p in payments %}
-      <li class="list-group-item">
-        <strong>{{ p.checkNumber or p.paymentDate }}:</strong> ${{ "%.2f"|format(p.amount) }}
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <div class="alert alert-info">No payments found for this order's customer.</div>
+<hr>
+
+{% if session.get('user_type') == 'customer' and order.status == "In Process" %}
+<form action="{{ url_for('cancel_order', order_number=order.orderNumber) }}"
+      method="POST"
+      onsubmit="return confirm('Are you sure you want to cancel this order? This cannot be undone.');">
+    <button class="btn btn-danger mt-3">Cancel Order</button>
+</form>
 {% endif %}
+
 {% endblock %}

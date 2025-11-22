@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Your Cart</h2>
+
+    {% if not cart %}
+    <div class="alert alert-info mt-3">
+        Your cart is empty.
+    </div>
+    <a href="{{ url_for('productlines') }}" class="btn btn-primary mt-3">
+        See products
+    </a>
+    {% else %}
+    <table class="table table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Unit Price</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart.values() %}
+          <tr>
+            <td>{{ item.productName }}</td>
+            <td>${{ "%.2f"|format(item.priceEach) }}</td>
+            <td>
+              <form action="{{ url_for('update_cart', product_code=item.productCode) }}" method="POST" class="d-flex auto-update-form">
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
+                       class="form-control form-control-sm quantity-input"
+                       style="width: 70px;">
+              </form>
+            </td>
+            <td class="item-subtotal" data-price="{{ item.priceEach }}">
+              ${{ "%.2f"|format(item.priceEach * item.quantity) }}
+            </td>
+            <td>
+              <form action="{{ url_for('remove_from_cart', product_code=item.productCode) }}" method="POST">
+                <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="text-end">
+    <h4>Total: <span id="cart-total">${{ "%.2f"|format(total) }}</span></h4>
+    <a href="{{ url_for('checkout') }}" class="btn btn-success btn-lg mt-3">
+        Proceed to payment
+    </a>
+    </div>
+  {% endif %}
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const quantityInputs = document.querySelectorAll(".quantity-input");
+
+  quantityInputs.forEach(input => {
+    input.addEventListener("change", () => {
+      if (input.value < 1) input.value = 1;
+      updateSubtotal(input);
+      updateTotal();
+      input.closest("form").submit();
+    });
+  });
+
+  function updateSubtotal(input) {
+    const row = input.closest("tr");
+    const price = parseFloat(row.querySelector(".item-subtotal").dataset.price);
+    const qty = parseInt(input.value);
+    const cell = row.querySelector(".item-subtotal");
+    cell.textContent = "$" + (price * qty).toFixed(2);
+  }
+
+  function updateTotal() {
+    let total = 0;
+    document.querySelectorAll(".item-subtotal").forEach(cell => {
+      total += parseFloat(cell.textContent.replace("$", ""));
+    });
+    document.getElementById("cart-total").textContent = "$" + total.toFixed(2);
+  }
+});
+</script>
+{% endblock %}

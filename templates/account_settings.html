@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+  <h2 class="mb-4">Account Settings</h2>
+
+  <!-- Basic Info Card -->
+  <div class="card mb-4">
+    <div class="card-header bg-dark text-white">
+      <strong>Your Profile</strong>
+    </div>
+    <div class="card-body">
+      <p><strong>Name:</strong> {{ user.contactFirstName if user_type=='customer' else user.firstName }}
+         {{ user.contactLastName if user_type=='customer' else user.lastName }}</p>
+
+      {% if user_type == 'customer' %}
+        <p><strong>Role:</strong> Customer</p>
+        <p><strong>Customer Number:</strong> {{ user.customerNumber }}</p>
+        <p><strong>Phone:</strong> {{ user.phone }}</p>
+        <p><strong>Address:</strong> {{ user.addressLine1 }}, {{ user.city }}, {{ user.country }}</p>
+      {% else %}
+        <p><strong>Role:</strong> Employee</p>
+        <p><strong>Employee Number:</strong> {{ user.employeeNumber }}</p>
+        <p><strong>Job Title:</strong> {{ user.jobTitle }}</p>
+        <p><strong>Office Code:</strong> {{ user.officeCode }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+
+  {% if user_type == "customer" %}
+  <!-- Financial Summary for Customers -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <strong>Financial Summary</strong>
+    </div>
+
+    <div class="card-body">
+
+      <p><strong>Total Orders:</strong>
+        ${{ "{:,.2f}".format(user.total_orders) if user.total_orders else "0.00" }}
+      </p>
+
+      <p><strong>Total Payments:</strong>
+        ${{ "{:,.2f}".format(user.total_payments) if user.total_payments else "0.00" }}
+      </p>
+
+      {% set balance = (user.total_orders or 0) - (user.total_payments or 0) %}
+      <p><strong>Outstanding Balance:</strong>
+        {% if balance > 0 %}
+          <span class="badge bg-danger">${{ "{:,.2f}".format(balance) }} owed</span>
+        {% else %}
+          <span class="badge bg-success">No debt 🎉</span>
+        {% endif %}
+      </p>
+
+    </div>
+  </div>
+  {% endif %}
+
+
+  <!-- Security Card -->
+  <div class="card">
+    <div class="card-header bg-secondary text-white">
+      <strong>Security</strong>
+    </div>
+    <div class="card-body">
+      <a href="{{ url_for('change_password') }}" class="btn btn-outline-dark">
+        Change Password
+      </a>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

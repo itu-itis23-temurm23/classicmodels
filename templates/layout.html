@@ -27,6 +27,17 @@
               href="{{ url_for('productlines') }}">Products</a>
           </li>
 
+          {% if session.get('user_type') == 'customer' %}
+          <li class="nav-item">
+            <a class="nav-link{% if request.endpoint == 'view_cart' %} active{% endif %}"
+              href="{{ url_for('view_cart') }}">
+              Cart
+              {% if session.get('cart') %}
+              ({{ session['cart']|length }})
+              {% endif %}
+            </a>
+          </li>
+          {% endif %}
           {% if session.get('user_number') %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle {% if request.endpoint == 'my_profile' or request.endpoint == 'customer_profile' or request.endpoint == 'customer_orders' or request.endpoint == 'employee_dashboard' %} active{% endif %}"
@@ -51,7 +62,14 @@
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="{{ url_for('change_password') }}">Change Password</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+
+              <li>
+                <a class="dropdown-item" href="{{ url_for('account_settings') }}">Account Settings</a>
+              </li>
+
               <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
           </li>

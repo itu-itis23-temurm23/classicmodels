@@ -35,18 +35,38 @@
         </div>
     </div>
 
-    <!-- Change Password Section -->
-    <div class="card shadow-sm mt-4 mb-5">
-        <div class="card-header">
-            <h5 class="mb-0">Account Settings</h5>
-        </div>
-        <div class="card-body">
-            <p>You can change your password from here.</p>
-            <a href="{{ url_for('change_password') }}" class="btn btn-warning">
-                Change Password
-            </a>
-        </div>
+        <h3>Financial Summary</h3>
+    <div class="card p-3 mb-4">
+    <p><strong>Total Orders:</strong> ${{ "{:,.2f}".format(balance.total_orders) }}</p>
+    <p><strong>Total Payments:</strong> ${{ "{:,.2f}".format(balance.total_payments) }}</p>
+
+    <strong>Balance:</strong>
+    {% if balance.balance > 0 %}
+        <span class="badge bg-danger">${{ "{:,.2f}".format(balance.balance) }} owed</span>
+    {% else %}
+        <span class="badge bg-success">No debt </span>
+    {% endif %}
     </div>
+
+    <h4>Payment History</h4>
+    <table class="table table-striped">
+    <thead>
+        <tr>
+        <th>Date</th>
+        <th>Check No</th>
+        <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in payments %}
+        <tr>
+            <td>{{ p.paymentDate }}</td>
+            <td>{{ p.checkNumber }}</td>
+            <td>${{ p.amount }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
 
 {% else %}
     <div class="alert alert-warning">Could not load customer profile.</div>

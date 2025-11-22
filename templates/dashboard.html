@@ -15,7 +15,18 @@
             <div class="fw-bold">{{ customer.customerName }}</div>
             <small class="text-muted">{{ customer.city }}, {{ customer.country }}</small>
         </div>
-        <span class="badge bg-primary rounded-pill">Customer #: {{ customer.customerNumber }}</span>
+        <div class="text-end">
+            <span class="badge bg-primary rounded-pill mb-1">Customer #: {{ customer.customerNumber }}</span><br>
+            {% for bal in customer_balances %}
+                {% if bal.customerNumber == customer.customerNumber %}
+                    {% if bal.balance > 0 %}
+                        <span class="badge bg-danger">Debt: ${{ "%.2f"|format(bal.balance) }}</span>
+                    {% else %}
+                        <span class="badge bg-success">No Debt</span>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
     </a>
     {% endfor %}
 </div>
