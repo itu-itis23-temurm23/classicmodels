@@ -1,4 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, session
+from werkzeug.security import generate_password_hash, check_password_hash
+import re, mysql
 
 db = None
 
@@ -48,3 +50,80 @@ def init_customer_routes(app, database):
         orders = db.get_customer_orders(customerNumber)
         
         return render_template("customer_orders.html", orders=orders)
+    
+    @app.route("/customer/signup", methods=["GET","POST"])
+    def customer_signup():
+        if request.method == "POST":
+
+            # get inputs
+            fname = request.form.get("contactFirstName","").strip()
+            lname = request.form.get('contactLastName', '').strip()
+            cname = request.form.get('customerName', '').strip()
+            phone = request.form.get('phone', '').strip()
+            address = request.form.get('addressLine1', '').strip()
+            city = request.form.get('city', '').strip()
+            country = request.form.get('country', '').strip()
+            password = request.form.get('password', '')
+
+            errors = [] # collect all errors
+
+            # validation
+
+            if not fname or not lname or not cname or not phone or not address or not city or not country:
+                errors.append("All fields are required.")
+
+            # Name validation
+            if len(fname) < 2 or len(lname) < 2:
+                errors.append("First and last name must be at least 2 characters.")
+
+            # Phone number check (digits only)
+            if not re.match(r'^[0-9\-\+\s]{6,20}$', phone):
+                errors.append("Phone number format is invalid.")
+
+            # length check
+            if len(fname) > 50 or len(lname) > 50 or len(cname) > 50 or len(address) > 50 or len(city) > 50 or len(country) > 50:
+                errors.append("Exceed maximum char limit 50")
+
+            # Password length
+            if len(password) < 6:
+                errors.append("Password must be at least 6 characters long.")
+
+            # check duplicates in DB
+            same_phone = db.execute_query("SELECT customerNumber FROM customers WHERE phone=%s",(phone,))
+
+            if same_phone:
+                errors.append("Phone number is already used")
+
+            # if errors re render page
+            if errors:
+                return render_template("customer_signup.html",errors=errors,form=request.form)
+            
+            # if everthing is valid create customer
+
+
+            #auto assign new customer number
+            max_row = db.execute_query("SELECT MAX(customerNumber) as max_id FROM customers", fetchone=True)
+            if max_row is None:
+                new_id = 1
+            else:
+                new_id = max_row["max_id"] + 1
+
+
+            
+            # hash password
+            hashed_pw = generate_password_hash(password)
+
+            try:
+                customer_data = (new_id, cname, lname, fname,
+            phone, address, city, country)
+                db.insert_customer(customer_data)
+                customer_auth_data = (new_id, hashed_pw)
+                db.insert_customer_to_auth(customer_auth_data)
+                flash(f"Account created successfully! Please log in. Customer number is: {new_id}", "success")
+                return redirect(url_for('login'))
+
+            except mysql.connector.Error as err:
+                flash("Something went wrong please try later")
+
+
+        return render_template("customer_signup.html")

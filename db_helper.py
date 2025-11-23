@@ -174,6 +174,27 @@ class DatabaseHandler:
             ORDER BY r.reportDate DESC
         """
         return self.execute_query(query, (manager_number,))
+    
+    def insert_customer(self, customer_info):
+        """
+            insert new customer to customers table
+        """
+
+        query = """
+            INSERT INTO customers (
+                customerNumber, customerName, contactLastName, contactFirstName,
+                phone, addressLine1, city, country, creditLimit
+            ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,NULL)
+        """
+
+        return self.execute_query(query,customer_info)
+
+    def insert_customer_to_auth(self, customer_info):
+        """
+            insert new customer info to customer auth
+        """
+        query = "INSERT INTO customer_auth (customerNumber, hashedPassword) VALUES(%s, %s)"
+        return self.execute_query(query, customer_info)
 
     def close(self):
         """Closes the cursor and database connection."""

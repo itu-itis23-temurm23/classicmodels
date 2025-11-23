@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h3 class="text-center mb-4">Customer Sign Up</h3>
+
+            <!-- ERROR MESSAGES -->
+            {% if errors %}
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    {% for err in errors %}
+                        <li>{{ err }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="POST">
+
+                <!-- First name & last name -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">First Name</label>
+                        <input type="text" name="contactFirstName" class="form-control"
+                               value="{{ form.contactFirstName if form else '' }}" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="contactLastName" class="form-control"
+                               value="{{ form.contactLastName if form else '' }}" required>
+                    </div>
+                </div>
+
+                <!-- Customer name -->
+                <div class="mb-3">
+                    <label class="form-label">Customer Name</label>
+                    <input type="text" name="customerName" class="form-control"
+                           value="{{ form.customerName if form else '' }}" required>
+                </div>
+
+                <!-- Phone -->
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control"
+                           value="{{ form.phone if form else '' }}" required>
+                </div>
+
+                <!-- Address -->
+                <div class="mb-3">
+                    <label class="form-label">Address Line 1</label>
+                    <input type="text" name="addressLine1" class="form-control"
+                           value="{{ form.addressLine1 if form else '' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">City</label>
+                    <input type="text" name="city" class="form-control"
+                           value="{{ form.city if form else '' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Country</label>
+                    <input type="text" name="country" class="form-control"
+                           value="{{ form.country if form else '' }}" required>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    Create Account
+                </button>
+
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('login') }}">Already have an account? Login</a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

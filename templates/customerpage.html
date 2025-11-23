@@ -29,7 +29,11 @@
                     <p class="ms-3">{{ customer.phone }}</p>
                     
                     <strong>Credit Limit:</strong>
-                    <p class="ms-3">${{ "{:,.2f}".format(customer.creditLimit) }}</p>
+                    {% if customer.creditLimit %}
+                        <p class="ms-3">${{ "{:,.2f}".format(customer.creditLimit) }}</p>
+                    {% else %}
+                        <p class="ms-3">${{ "{:,.2f}".format(0.0) }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
