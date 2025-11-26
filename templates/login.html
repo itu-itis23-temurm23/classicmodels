@@ -1,64 +1,58 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container mt-5" style="max-width: 500px;">
-    <div class="card shadow-sm">
-        <div class="card-header p-0">
-            <ul class="nav nav-tabs nav-fill" id="loginTab" role="tablist">
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg border-0" style="max-width: 450px; width: 100%;">
+        <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+            <h3 class="text-center">Welcome Back</h3>
+            <p class="text-center text-muted small">Please sign in to continue</p>
+            
+            <ul class="nav nav-pills nav-fill mt-3" id="loginTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-pane" type="button" role="tab" aria-controls="customer-pane" aria-selected="true">
-                        Customer Login
+                    <button class="nav-link active fw-bold" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-pane" type="button">
+                        Customer
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="employee-tab" data-bs-toggle="tab" data-bs-target="#employee-pane" type="button" role="tab" aria-controls="employee-pane" aria-selected="false">
-                        Employee Login
+                    <button class="nav-link fw-bold" id="employee-tab" data-bs-toggle="tab" data-bs-target="#employee-pane" type="button">
+                        Employee
                     </button>
                 </li>
             </ul>
         </div>
-        <div class="card-body">
-            <div class="tab-content p-3" id="loginTabContent">
-                <div class="tab-pane fade show active" id="customer-pane" role="tabpanel" aria-labelledby="customer-tab" tabindex="0">
-                    <h5 class="text-center mb-4">Customer Login</h5>
+
+        <div class="card-body p-4">
+            <div class="tab-content" id="loginTabContent">
+                <div class="tab-pane fade show active" id="customer-pane">
                     <form method="POST">
                         <input type="hidden" name="user_type" value="customer">
-                        
-                        <div class="mb-3">
-                            <label for="customer_number" class="form-label">Customer Number</label>
-                            <input type="text" class="form-control" id="customer_number" name="number" placeholder="e.g., 123" required>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="customer_number" name="number" placeholder="123" required>
+                            <label for="customer_number">Customer Number</label>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="customer_password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="customer_password" name="password" required>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="customer_password" name="password" placeholder="Password" required>
+                            <label for="customer_password">Password</label>
                         </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100">Login as Customer</button>
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Login</button>
                     </form>
-
                     <div class="text-center mt-3">
-                        <a href="{{ url_for('customer_signup') }}">Don't have an account? Sign up</a>
+                        <small class="text-muted">New here? <a href="{{ url_for('customer_signup') }}" class="text-decoration-none">Create an account</a></small>
                     </div>
-                    
                 </div>
                 
-                <div class="tab-pane fade" id="employee-pane" role="tabpanel" aria-labelledby="employee-tab" tabindex="0">
-                    <h5 class="text-center mb-4">Employee Login</h5>
+                <div class="tab-pane fade" id="employee-pane">
                     <form method="POST">
                         <input type="hidden" name="user_type" value="employee">
-                        
-                        <div class="mb-3">
-                            <label for="employee_number" class="form-label">Employee Number</label>
-                            <input type="text" class="form-control" id="employee_number" name="number" placeholder="e.g., 1234" required>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="employee_number" name="number" placeholder="1234" required>
+                            <label for="employee_number">Employee ID</label>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="employee_password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="employee_password" name="password" required>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="employee_password" name="password" placeholder="Password" required>
+                            <label for="employee_password">Password</label>
                         </div>
-                        
-                        <button type="submit" class="btn btn-dark w-100">Login as Employee</button>
+                        <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">Employee Access</button>
                     </form>
                 </div>
             </div>
